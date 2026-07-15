@@ -5,7 +5,7 @@ description: >
   falhando ou erros de compilação. Acione proativamente sempre que houver um erro reproduzível
   (log de aplicação, container Docker, CI/CD ou saída de teste) e o usuário pedir para
   "corrigir", "investigar" ou "resolver" um bug.
-tools: Read, Write, Edit, Grep, Glob, Bash
+tools: Read, Write, Edit, Grep, Glob, Bash, Skill
 model: sonnet
 effort: medium
 ---

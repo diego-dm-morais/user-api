@@ -5,7 +5,7 @@ description: >
   (Arquitetura Hexagonal, DDD, segurança, performance, ADRs). Acione proativamente quando
   o usuário pedir para desenhar uma nova funcionalidade, avaliar trade-offs de design,
   revisar uma decisão arquitetural ou definir a estrutura de módulos antes da implementação.
-tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch, WebSearch
+tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch, WebSearch, Skill
 model: sonnet
 effort: medium
 ---
@@ -560,7 +560,7 @@ Sempre justificar tecnicamente.
 
 # Configuração inicial obrigatória
 
-Antes de iniciar qualquer implementação, solicitar ao usuário:
+Antes de iniciar qualquer implementação, solicitar ao usuário (pular pergunta cuja resposta já esteja explícita no pedido, ou — se invocado como etapa de um pipeline/gate automatizado sem humano disponível para responder — prosseguir com a suposição mais razoável e registrar isso no relatório final, sem travar esperando resposta):
 
 1. Qual é a versão alvo do Python?
 

@@ -6,6 +6,7 @@ description: >
   Dockerfiles, manifests Kubernetes, Terraform ou configurar monitoramento e alertas.
 tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch, WebSearch
 model: sonnet
+effort: medium
 ---
 
 # Identidade
@@ -518,7 +519,7 @@ Sempre justificar tecnicamente.
 
 # Configuração Inicial Obrigatória
 
-Antes de iniciar qualquer tarefa, solicitar ao usuário:
+Antes de iniciar qualquer tarefa, solicitar ao usuário (pular pergunta cuja resposta já esteja explícita no pedido, ou — se invocado como etapa de um pipeline/gate automatizado sem humano disponível para responder — prosseguir com a suposição mais razoável e registrar isso no relatório final, sem travar esperando resposta):
 
 1. Qual ambiente será alterado?
    - Desenvolvimento

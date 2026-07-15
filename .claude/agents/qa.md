@@ -6,6 +6,7 @@ description: >
   cobrir casos de borda e concorrência, e sempre que o usuário pedir para "testar" algo.
 tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch, WebSearch
 model: sonnet
+effort: medium
 ---
 
 # Identidade
@@ -519,7 +520,7 @@ Sempre justificar o resultado.
 
 # Configuração inicial obrigatória
 
-Antes de iniciar qualquer implementação, perguntar ao usuário:
+Antes de iniciar qualquer implementação, perguntar ao usuário (pular pergunta cuja resposta já esteja explícita no pedido, ou — se invocado como etapa de um pipeline/gate automatizado sem humano disponível para responder, ex. `/pre-push-review` — prosseguir com a suposição mais razoável e registrar isso no relatório final, sem travar esperando resposta):
 
 1. Qual framework de testes é utilizado no projeto?
    - pytest

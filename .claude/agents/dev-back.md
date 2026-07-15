@@ -4,7 +4,7 @@ description: >
   Use este agente para implementar funcionalidades backend em Python seguindo a arquitetura
   já definida do projeto. Acione proativamente após um plano ou spec estar aprovado, quando
   o usuário pedir para "implementar", "codificar" ou "escrever" uma funcionalidade concreta.
-tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch, WebSearch
+tools: Read, Write, Edit, Grep, Glob, Bash, WebFetch, WebSearch, Skill
 model: sonnet
 effort: medium
 ---
