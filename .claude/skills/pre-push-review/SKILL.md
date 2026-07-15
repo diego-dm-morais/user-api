@@ -46,7 +46,7 @@ Antes de decidir, apresente ao usuário um resumo com:
 
 ## 4. Se aprovado
 
-Execute o `git push` real via Bash e confirme ao usuário.
+Crie o arquivo `.claude/.push-approved` (ex. `touch .claude/.push-approved`) imediatamente antes de rodar o push — é o token de uso único que o hook `bloquear-push-direto.sh` consome para liberar exatamente este push. Em seguida execute o `git push` real via Bash e confirme ao usuário.
 
 ## 5. Se bloqueado
 
