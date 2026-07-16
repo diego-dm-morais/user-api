@@ -27,7 +27,10 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required, set it in .env}
+      # ponytail: built from POSTGRES_* against the "postgres" service name, not
+      # host DATABASE_URL (that one points at "localhost", only valid on the host
+      # — see dev:local / migration:up — and would not resolve inside this container).
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-user_api}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required, set it in .env}@postgres:5432/${POSTGRES_DB:-user_api}
       API_KEY_HASHES: ${API_KEY_HASHES:?API_KEY_HASHES is required, set it in .env}
       AUTH_REGISTER_RATE_LIMIT: ${AUTH_REGISTER_RATE_LIMIT:-10/60s}
     ports:
