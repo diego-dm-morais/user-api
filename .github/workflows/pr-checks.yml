@@ -1,0 +1,31 @@
+# Runs on every Pull Request into main (intended flow: develop -> main).
+# Quality gate only — no image is published here; that happens in
+# release.yml once the PR is merged and main is pushed to.
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    uses: ./.github/workflows/quality.yml
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: quality
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+      - uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: .
+          push: false
+          tags: user-api:pr-${{ github.event.number }}
+          cache-from: type=gha
+          # Only write to the shared GHA cache for same-repo PRs — a PR from a
+          # fork must not be able to poison the cache used by trusted builds.
+          cache-to: ${{ github.event.pull_request.head.repo.full_name == github.repository && 'type=gha,mode=max' || '' }}

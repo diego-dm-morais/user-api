@@ -1,0 +1,85 @@
+version: "3"
+
+dotenv: [".env"]
+
+vars:
+  COMPOSE: docker compose
+
+tasks:
+  install:
+    desc: Install project dependencies (dev + all extras)
+    cmds:
+      - uv sync --all-extras --dev
+
+  db:up:
+    desc: Start local Postgres (docker compose)
+    cmds:
+      - "{{.COMPOSE}} up -d postgres"
+
+  db:down:
+    desc: Stop and remove local Postgres (keeps the data volume)
+    cmds:
+      - "{{.COMPOSE}} stop postgres"
+
+  migration:up:
+    desc: Apply all pending Alembic migrations
+    cmds:
+      - uv run alembic upgrade head
+
+  migration:down:
+    desc: Roll back the last Alembic migration
+    cmds:
+      - uv run alembic downgrade -1
+
+  dev:local:
+    desc: Run the API locally with reload, against db:up's Postgres
+    deps: [db:up]
+    cmds:
+      - uv run uvicorn user_api.adapters.inbound.http.app:app --reload --host 0.0.0.0 --port 8000
+
+  deploy:local:
+    desc: Build and run the full stack (API + Postgres) in Docker
+    cmds:
+      - "{{.COMPOSE}} up -d --build postgres"
+      - "{{.COMPOSE}} run --rm api alembic upgrade head"
+      - "{{.COMPOSE}} up -d --build api"
+
+  deploy:local:down:
+    desc: Tear down the full local Docker stack
+    cmds:
+      - "{{.COMPOSE}} down"
+
+  lint:
+    desc: Run ruff
+    cmds:
+      - uv run ruff check src tests
+
+  typecheck:
+    desc: Run mypy
+    cmds:
+      - uv run mypy src
+
+  test:
+    desc: Run the test suite
+    cmds:
+      - uv run pytest tests/unit tests/contract tests/integration -q
+
+  security:
+    desc: Run bandit + pip-audit
+    cmds:
+      - uv run bandit -r src
+      - uv run pip-audit
+
+  build:
+    desc: Build the Docker image
+    cmds:
+      - docker build -t user-api:local .
+
+  ci:
+    desc: Run the same checks CI runs
+    cmds:
+      - task: lint
+      - task: typecheck
+      - task: test
+      - task: security
+      - task: build

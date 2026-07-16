@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-user_api}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required, set it in .env}
+      POSTGRES_DB: ${POSTGRES_DB:-user_api}
+    ports:
+      # loopback-only: task migration:up / dev:local run alembic and uvicorn
+      # on the host against this port, no need to expose it beyond localhost
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-user_api} -d ${POSTGRES_DB:-user_api}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required, set it in .env}
+      API_KEY_HASHES: ${API_KEY_HASHES:?API_KEY_HASHES is required, set it in .env}
+      AUTH_REGISTER_RATE_LIMIT: ${AUTH_REGISTER_RATE_LIMIT:-10/60s}
+    ports:
+      - "${API_PORT:-8000}:8000"
+    # ponytail: no separate migration job/init container; deploy:local task runs
+    # `alembic upgrade head` on the host against the published postgres port
+    # before `docker compose up` starts the api service.
+
+volumes:
+  postgres_data:
